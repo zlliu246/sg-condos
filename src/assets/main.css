@@ -1,0 +1,10 @@
+#app {
+  font-weight: 300;
+  color: #ccc;
+  font-family: Roboto,sans-serif;
+  background-image: radial-gradient(#444, #222, #000);
+  background-attachment: fixed;
+}
+
+a {color: #ccc;}
+a:hover{color: #888}
