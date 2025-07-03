@@ -119,6 +119,10 @@ function handleShareClick() {
   )
 }
 
+function handleSaveClick() {
+  alert("saved!")
+}
+
 </script>
 
 <!-- TEMPLATE STARTS HERE -->
@@ -165,10 +169,10 @@ function handleShareClick() {
                 @click="handleShareClick">
                 Share
               </button>
-              <!-- <button class="btn btn-danger me-2" 
-                @click="">
+              <button class="btn btn-danger me-2" 
+                @click="handleSaveClick">
                 Save
-              </button> -->
+              </button>
             </div>
 
         </div>

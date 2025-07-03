@@ -35,6 +35,7 @@ GROUP BY
     YEAR(sale_date), floor_level, area
 ORDER BY
     YEAR(sale_date), floor_level, area
+LIMIT 100
 `
     },
 
@@ -65,6 +66,7 @@ GROUP BY
     sales.project_id, floor_level, YEAR(sale_date)
 ORDER BY
     sales.project_id, floor_level, YEAR(sale_date)
+LIMIT 100
 `
     },
 
@@ -85,6 +87,7 @@ FROM
     ON projects.id = faci.project_id
 WHERE
     project_name = 'the orie'
+LIMIT 100
 `
     },
 
@@ -113,7 +116,7 @@ WHERE
     project_name = 'the luxurie'
 ORDER BY 
     sale_date DESC
-
+LIMIT 100
     `
     }
 }
