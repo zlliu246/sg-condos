@@ -44,17 +44,26 @@ async function runQuery(db, query) {
 
 const state = reactive({
   db: null,
-  query: QUERY_MAP.PROJECTS.query.trim(),
+  query: QUERY_MAP.FROM_CONDO_NAME_GET_AVG_PSF.query.trim(),
   tableData: [],
+  messageToUser: '',
 })
 
 const router = useRouter()
 const textareaRef = ref(null)
 
+function setUrlParamQueryIfExists() {
+  // eg. http://localhost:5173/?query=WITH+normalized+AS+%28%0A++++SELECT%0A++++++++project_name%2C+price%2C+psf%2C+sale_date%2C+sale_type%2C+floor_level%2C%0A++++++++CASE+%0A++++++++++++WHEN+area+%3C+600+THEN+%27%3C+600%27%0A++++++++++++WHEN+area+%3C+700+THEN+%27600+to+699%27%0A++++++++++++WHEN+area+%3C++800+THEN+%27700+to+799%27%0A++++++++++++WHEN+area+%3C+900+THEN+%27800+to+899%27%0A++++++++++++WHEN+area+%3C+1000+THEN+%27900+to+999%27%0A++++++++++++ELSE+%27%3E%3D+1000%27%0A++++++++END+as+area%0A++++FROM+%0A++++++++read_csv_auto%28%27sales.csv%27%29+sales%0A++++++++LEFT+JOIN+read_csv_auto%28%27projects.csv%27%29+projects%0A++++++++ON+sales.project_id+%3D+projects.id%0A++++WHERE+%0A++++++++project_name+%3D+%27forest+woods%27%0A%29%0ASELECT%0A++++MIN%28project_name%29+AS+project_name%2C%0A++++YEAR%28sale_date%29+AS+year%2C%0A++++floor_level%2C%0A++++area%2C%0A++++ROUND%28AVG%28price%29%29+AS+avg_price%2C%0A++++ROUND%28AVG%28psf%29%29+AS+avg_psf%0AFROM%0A++++normalized%0AGROUP+BY%0A++++YEAR%28sale_date%29%2C+floor_level%2C+area%0AORDER+BY%0A++++YEAR%28sale_date%29%2C+floor_level%2C+area
+  const params = new URLSearchParams(window.location.search);
+  const query = params.get('query')
+  if (query != null) state.query = query
+}
+
 onMounted(() => {
   initDb().then(
     (db) => {
       state.db = db
+      setUrlParamQueryIfExists()
       handleSubmitClick()
     }
   )
@@ -96,6 +105,20 @@ function handleTextAreaKeyDownTabs(event) {
       textarea.value.substring(end)
 }
 
+function handleShareClick() {
+  let url = new URL(window.location.origin + window.location.pathname);
+  url.searchParams.append('query', state.query);
+  window.history.pushState({}, '', url);
+  navigator.clipboard.writeText(url).then(
+    (res) => {
+      state.messageToUser = 'Copied to clipboard';
+      setTimeout(function() {
+        state.messageToUser = ""
+      }, 2000);
+    }
+  )
+}
+
 </script>
 
 <!-- TEMPLATE STARTS HERE -->
@@ -130,10 +153,23 @@ function handleTextAreaKeyDownTabs(event) {
             </button>
 
             <!-- SUBMIT BUTTON -->
-            <button class="btn btn-success w-100 position-absolute bottom-0 start-0" 
-              @click="handleSubmitClick">
-              Submit
-            </button>
+            <div class="position-absolute bottom-0 start-0">
+
+              <div style="color:limegreen" class="mb-2">{{ state.messageToUser }}</div>
+
+              <button class="btn btn-success me-2" 
+                @click="handleSubmitClick">
+                Submit
+              </button>
+              <button class="btn btn-primary me-2" 
+                @click="handleShareClick">
+                Share
+              </button>
+              <!-- <button class="btn btn-danger me-2" 
+                @click="">
+                Save
+              </button> -->
+            </div>
 
         </div>
 

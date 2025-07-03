@@ -4,7 +4,6 @@ const faqs = [
   {cat: "project", qn: "what is this?", ans: "A simple project for you to easily query Singapore condo transaction data using SQL"},
   {cat: "project", qn: "what value can I gain by using this project?", ans: "You can easily query past condo transaction data (with augmentations eg. latitude/longitude values, number of units in project, TOP year, nearby amenities, distance from MRT etc)"},
   {cat: "project", qn: "but I can find this data on URA?", ans: "URA data doesn't have data on latitude/longitude, num_units, TOP year, nearby amenities etc"},
-  {cat: "project", qn: "but I can just google it?", ans: "do it, I don't care"},
   {cat: "project", qn: "why did you start this project?", ans: "I was looking for condos to buy, and existing solutions were either paid or shit."},
   {cat: "project", qn: "do you earn money from this?", ans: "no, but if you strongly insist on giving me money, please feel free to do so."},
   {cat: "project", qn: "why did you expose this to the public?", ans: "I'll be sad if my hard work goes into the project graveyard just like that."},
@@ -17,6 +16,7 @@ const faqs = [
   {cat: "tech", qn: "how are we able to make SQL queries on this site?", ans: "DuckDB magic and static CSV files"},
   {cat: "data", qn: "Some of the data is screwed up", ans: "Yep, but I cannot look through 100k rows of data myself to verify it. Do send me an email if you see wrong data."},
   {cat: "data", qn: "There's no data before 2020?", ans: "Yep, URA only shows data from past 5 years. And data older than 5 years old isn't really that useful (my subjective opinion tho)"},
+  {cat: "data", qn: "How do I do custom analysis on the data?", ans: "You can download it locally from <site> and analyse it yourself"},
 ]
 
 /**

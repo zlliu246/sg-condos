@@ -1,57 +1,9 @@
 <script>
 
-const SALES_QUERY = `
-SELECT
-    *
-FROM
-    read_csv_auto('sales.csv')
-LIMIT 5
-`
-
-const PROJECTS_QUERY = `
-SELECT 
-    *
-FROM
-    read_csv_auto('projects.csv')
-LIMIT 5
-`
-
-const PROJECT_FACILITIES_ASSOC_QUERY = `
-SELECT
-    *
-FROM
-    read_csv_auto('projects_facilities_assoc.csv')
-LIMIT 5
-`
-
-const AVG_PSF_BY_MRT_QUERY = `
-SELECT
-    MIN(project_name) AS project_name,
-    floor_level,
-    YEAR(sale_date) AS year,
-    ROUND(AVG(psf)) AS avg_psf,
-    MIN(top) AS top,
-    MIN(num_units) AS num_units,
-    MIN(dist_meters) AS dist_from_mrt
-FROM 
-    read_csv_auto('sales.csv') sales
-    LEFT JOIN read_csv_auto('projects.csv') projects
-    ON sales.project_id = projects.id
-    LEFT JOIN read_csv_auto('projects_facilities_assoc.csv') faci
-    ON projects.id = faci.project_id
-WHERE 
-    facility_name IN ('serangoon mrt', 'kovan mrt')
-    AND YEAR(sale_date) >= 2024
-    AND area >= 650
-    AND area <= 800
-    AND floor_level != '01 to 05'
-GROUP BY
-    sales.project_id, floor_level, YEAR(sale_date)
-ORDER BY
-    sales.project_id, floor_level, YEAR(sale_date)
-`
-
-const AVG_PSF_SPECIFIC_CONDO_QUERY = `
+export const QUERY_MAP = {
+    FROM_CONDO_NAME_GET_AVG_PSF: {
+        desc: "From condo name, get avg PSFs",
+        query: `
 WITH normalized AS (
     SELECT
         project_name, price, psf, sale_date, sale_type, floor_level,
@@ -84,8 +36,41 @@ GROUP BY
 ORDER BY
     YEAR(sale_date), floor_level, area
 `
+    },
 
-const FACILITIES_NEAR_CONDO_QUERY = `
+    FROM_MRTS_GET_AVG_PSF: {
+        desc: "From MRTs, get avg PSF of nearby projects",
+        query: `
+SELECT
+    MIN(project_name) AS project_name,
+    floor_level,
+    YEAR(sale_date) AS year,
+    ROUND(AVG(psf)) AS avg_psf,
+    MIN(top) AS top,
+    MIN(num_units) AS num_units,
+    MIN(dist_meters) AS dist_from_mrt
+FROM 
+    read_csv_auto('sales.csv') sales
+    LEFT JOIN read_csv_auto('projects.csv') projects
+    ON sales.project_id = projects.id
+    LEFT JOIN read_csv_auto('projects_facilities_assoc.csv') faci
+    ON projects.id = faci.project_id
+WHERE 
+    facility_name IN ('serangoon mrt', 'kovan mrt')
+    AND YEAR(sale_date) >= 2024
+    AND area >= 650
+    AND area <= 800
+    AND floor_level != '01 to 05'
+GROUP BY
+    sales.project_id, floor_level, YEAR(sale_date)
+ORDER BY
+    sales.project_id, floor_level, YEAR(sale_date)
+`
+    },
+
+    FACILITIES_NEAR_CONDO: {
+        desc: "From condo name, get nearby facilities",
+        query: `
 SELECT
     project_name,
     tenure,
@@ -101,32 +86,35 @@ FROM
 WHERE
     project_name = 'the orie'
 `
+    },
 
+    FROM_NAME_GET_TRANSACTION: {
+        desc: "From condo name, get transactions",
+        query: `
+SELECT
+    project_name,
+    price,
+    area,
+    psf,
+    YEAR(sale_date) AS year,
+    MONTH(sale_date) AS month,
+    sale_type,
+    floor_level,
+    tenure,
+    postal_district,
+    market_segment,
+    top,
+    developer
+FROM
+    read_csv_auto('projects.csv') projects
+    LEFT JOIN read_csv_auto('sales.csv') sales
+    ON projects.id = sales.project_id
+WHERE
+    project_name = 'the luxurie'
+ORDER BY 
+    sale_date DESC
 
-export const QUERY_MAP = {
-    SALES: {
-        desc: "5 rows from sales.csv",
-        query: SALES_QUERY
-    },
-    PROJECTS: {
-        desc: "5 rows from projects.csv",
-        query: PROJECTS_QUERY
-    },
-    PROJECTS_FACILITIES_ASSOC: {
-        desc: "5 rows in projects_facilities_assoc.csv",
-        query: PROJECT_FACILITIES_ASSOC_QUERY
-    },
-    AVG_PSF_BY_MRT: {
-        desc: "Avg PSFs of projects near certain MRTs",
-        query: AVG_PSF_BY_MRT_QUERY
-    },
-    AVG_PSF_SPECIFIC_CONDO: {
-        desc: "Avg PSFs of a specific condo",
-        query: AVG_PSF_SPECIFIC_CONDO_QUERY
-    },
-    FACILITIES_NEAR_CONDO: {
-        desc: "Facilities near specifc condo",
-        query: FACILITIES_NEAR_CONDO_QUERY
+    `
     }
 }
 
