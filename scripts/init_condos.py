@@ -11,7 +11,7 @@ from geopy.distance import distance as get_distance
 # else, add incremental data into table
 nuke = "nuke" in sys.argv
 
-from scripts.common import (
+from common import (
     get_cleaned_condos_as_df,
     get_99co_maps,
     get_latlon_maps,
@@ -172,6 +172,6 @@ with mysql.connector.connect(host="localhost", user="root", password="", databas
         data = cursor.fetchall()
         return pd.DataFrame(data, columns=[i[0] for i in cursor.description])
 
-    run("SELECT * FROM projects").to_csv("public/projects.csv", index=False)
-    run("SELECT * FROM sales").to_csv("public/sales.csv", index=False)
-    run("SELECT * FROM projects_facilities_assoc").to_csv("public/projects_facilities_assoc.csv", index=False)
+    run("SELECT * FROM projects").to_csv("public/csvs/projects.csv", index=False)
+    run("SELECT * FROM sales").to_csv("public/csvs/sales.csv", index=False)
+    run("SELECT * FROM projects_facilities_assoc").to_csv("public/csvs/projects_facilities_assoc.csv", index=False)

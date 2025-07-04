@@ -2,6 +2,7 @@
 
 from time import sleep
 from datetime import datetime
+from pathlib import Path
 
 import mysql.connector
 from selenium import webdriver
@@ -96,10 +97,14 @@ def click_download_csv_button(driver):
             print(anchor)
             anchor.click()
 
+DOWNLOAD_PATH = str(Path(".").resolve() / "raw/condo_csvs")
+
 try:
     options = webdriver.ChromeOptions()
     options.add_experimental_option("prefs", {
-        "download.default_directory": "/Users/lzl/Documents/repos/notes/__PROJECTS/house_data/raw/condo_csvs"
+        "download.default_directory": DOWNLOAD_PATH,
+        "download.directory_upgrade": True,
+        "safebrowsing.enabled": True
     })
     driver = webdriver.Chrome(options=options)
     driver.get(url)
