@@ -48,11 +48,11 @@ const router = useRouter()
 const textareaRef = ref(null)
 
 onMounted(() => {
+  loadSavedQueries()
+  setUrlParamQueryIfExists()
   initDb().then(
     (db) => {
       state.db = db
-      loadSavedQueries()
-      setUrlParamQueryIfExists()
       handleSubmitClick()
     }
   )
@@ -139,7 +139,8 @@ function handleSaveClick() {
 }
 
 function deleteLocalSavedQuery(desc) {
-  window.confirm(`Confirm delete ${desc}?`)
+  let confirmation = window.confirm(`Confirm delete ${desc}?`)
+  if (confirmation == false) {return}
   let savedQueries = getLocalStorageQueries()
   let newSavedQueries = []
   for (const row of savedQueries) {
