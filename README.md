@@ -1,40 +1,30 @@
-# frontend
+# Sg-condos
 
-This template should help get you started developing with Vue 3 in Vite.
+Link: https://condo-db-sg.netlify.app
 
-## Recommended IDE Setup
+# Summary
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+A simple project that:
+- collects historical condo data in Singapore
+- cleans and augments it (eg. latitude/longitude/num_nuits/top/developer/facilties)
+- splits it into 3 related SQL tables
+- exposes it to the public to query using SQL using Vue
 
-## Type Support for `.vue` Imports in TS
+# How to use
+- go to `https://condo-db-sg.netlify.app`
+- use SQL to query historical condo data
+- done
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+# General FAQ
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+| Question | Answer |
+| --- | --- |
+| why did you create this project? | my GF and I were looking for condos, and existing historical condo data sources were annoying to use |
+| why are you exposing this to the public? | I'll be sad if my hard works simply goes into the project graveyard |
+| do you earn money from this? | no |
+| how does the site work? | Vue 3 + duckdb magic. Note that there's no backend, and the data is served through static CSV files |
+| how often is data updated? | probably every month or so |
+| is the data 100% accurate? | probably not as I can't verify 2000+ condo projects manually. Do lmk if data is screwed up |
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
+# The data
+placeholder
