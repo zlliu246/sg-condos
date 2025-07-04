@@ -58,9 +58,12 @@ SELECT
     floor_level,
     YEAR(sale_date) AS year,
     ROUND(AVG(psf)) AS avg_psf,
+    ROUND(AVG(area)) AS avg_area,
+    MIN(area) AS area,
     MIN(top) AS top,
     MIN(num_units) AS num_units,
-    MIN(dist_meters) AS dist_from_mrt
+    MIN(dist_meters) AS dist_from_mrt,
+    MIN(market_segment) AS market_segment
 FROM 
     read_csv_auto('sales.csv') sales
     LEFT JOIN read_csv_auto('projects.csv') projects

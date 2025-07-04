@@ -92,6 +92,8 @@ function handleSubmitClick() {
 
 function handleSavedQueryButtonClick(savedQuery) {
   state.query = savedQuery.query.trim()
+  let defaultQueryDescs = DEFAULT_QUERIES.map(row => row.desc)
+  if (defaultQueryDescs.includes(savedQuery.desc)) return
   state.savedQueryDesc = savedQuery.desc
 }
 
@@ -128,10 +130,10 @@ function handleSaveClick() {
     alert("Please give your saved query a description")
     return
   }
-  let savedQueries = getLocalStorageQueries()
-  if (savedQueries.map((row) => row.desc).includes(state.savedQueryDesc)) {
-    alert("Desc already exists. Please use another.")
-    return
+  let savedQueries = []
+  for (const row of getLocalStorageQueries()) {
+    if (row.desc == state.savedQueryDesc) continue
+    savedQueries.push(row)
   }
   savedQueries.push({
     desc: state.savedQueryDesc,
