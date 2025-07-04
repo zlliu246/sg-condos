@@ -24,7 +24,6 @@ A simple project that:
 | do you earn money from this? | no |
 | how does the site work? | Vue 3 + duckdb magic. Note that there's no backend, and the data is served through static CSV files |
 | how often is data updated? | probably every month or so |
-| is the data 100% accurate? | probably not as I can't verify 2000+ condo projects manually. Do lmk if data is screwed up |
 
 # The data schema
 
@@ -83,3 +82,16 @@ How is the data collected:
 
 Tech used for data: Python | Selenium | OneMap API | Airflow | Pandas | SQL
 Tech used for site: Vue | DuckDB | Netlify
+
+# Even More FAQ
+
+| Question | Answer |
+| --- | --- |
+| Is the data 100% accurate? | probably not as I can't verify 2000+ condo projects manually. Do lmk if data is screwed up |
+| There's no data before 2020? | URA only has past 5 years worth of data + I don't think data older than 5 years old is that useful |
+| Why is there no HDB data? | not my priority |
+| Why is there no landed data? | not my priority |
+| Why is there no commercial data? | not my priority |
+| Frontend code is bad | not my priority |
+| CSS is really bad | not my priority |
+| My condo is missing? | data is collected on a best-effort basis |
