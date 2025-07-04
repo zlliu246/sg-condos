@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import DataTable from '../components/DataTable.vue'
 import MetaDataTable from '../components/MetaDataTable.vue'
-import { QUERY_MAP, SCHEMA_METADATA_LIST } from '../components/Constants.vue'
+import { DEFAULT_QUERIES, SCHEMA_METADATA_LIST } from '../components/Constants.vue'
 
 import * as duckdb from '@duckdb/duckdb-wasm';
 import duckdb_wasm from '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url';
@@ -44,9 +44,11 @@ async function runQuery(db, query) {
 
 const state = reactive({
   db: null,
-  query: QUERY_MAP.FROM_CONDO_NAME_GET_AVG_PSF.query.trim(),
+  query: DEFAULT_QUERIES[0].query.trim(),
   tableData: [],
   messageToUser: '',
+  savedQueryDesc: '',
+  savedQueries: [],
 })
 
 const router = useRouter()
@@ -59,10 +61,28 @@ function setUrlParamQueryIfExists() {
   if (query != null) state.query = query
 }
 
+function getLocalStorageQueries() {
+  let localQueries = JSON.parse(localStorage.getItem("savedQueries"))
+  if (localQueries == null) return []
+  return localQueries
+}
+
+function loadSavedQueries() {
+  state.savedQueries = []
+  let localQueries = getLocalStorageQueries()
+  for (const row of localQueries) {
+    state.savedQueries.push(row)
+  }
+  for (const row of DEFAULT_QUERIES) {
+    state.savedQueries.push(row)
+  }
+}
+
 onMounted(() => {
   initDb().then(
     (db) => {
       state.db = db
+      loadSavedQueries()
       setUrlParamQueryIfExists()
       handleSubmitClick()
     }
@@ -73,7 +93,6 @@ function handleSubmitClick() {
   runQuery(state.db, state.query).then(
     (result) => {
       state.tableData = result
-      // console.log(state.tableData[0])
     }
   ).catch((error) => {
     alert(error)
@@ -120,7 +139,31 @@ function handleShareClick() {
 }
 
 function handleSaveClick() {
-  alert("saved!")
+  if (state.savedQueryDesc.length == 0) {
+    alert("Please give your saved query a description")
+    return
+  }
+  let savedQueries = getLocalStorageQueries()
+  savedQueries.push({
+    desc: state.savedQueryDesc,
+    query: state.query,
+    type: 'localstorage'
+  })
+  localStorage.setItem("savedQueries", JSON.stringify(savedQueries));
+  state.savedQueryDesc = ''
+  loadSavedQueries()
+}
+
+function deleteLocalSavedQuery(query) {
+  let savedQueries = getLocalStorageQueries()
+  let newSavedQueries = []
+  for (const row of savedQueries) {
+    if (row.query != query) {
+      newSavedQueries.push(row)
+    }
+  }
+  localStorage.setItem("savedQueries", JSON.stringify(newSavedQueries))
+  loadSavedQueries()
 }
 
 </script>
@@ -149,30 +192,51 @@ function handleSaveClick() {
 
            <h6>Sample queries:</h6>
 
-            <button 
-              class="btn btn-secondary w-100 mb-2"
-              @click="handleSampleButtonClick(QUERY_MAP[queryName].query)"
-              v-for="queryName in Object.keys(QUERY_MAP)">
-              {{ QUERY_MAP[queryName].desc }}
-            </button>
+            <div v-for="savedQuery in state.savedQueries" style="display:flex">
+              <button 
+                class="btn btn-secondary w-100 mb-2 btn-sm"
+                @click="handleSampleButtonClick(savedQuery.query)"
+                >
+                {{ savedQuery.desc }}
+              </button>
+
+              <button v-if="savedQuery.type=='localstorage'"
+                class="btn btn-danger mb-2 ms-2 btn-sm"
+                @click="deleteLocalSavedQuery(savedQuery.query)">
+                Delete
+              </button>
+
+            </div>
 
             <!-- SUBMIT BUTTON -->
-            <div class="position-absolute bottom-0 start-0">
+            <div class="position-absolute bottom-0 start-0 w-100">
 
               <div style="color:limegreen" class="mb-2">{{ state.messageToUser }}</div>
+              
+              <div style="display:flex">
+                <button class="btn btn-success w-100 me-2" 
+                  @click="handleSubmitClick">
+                  Submit
+                </button>
+                
+                <button class="btn btn-primary w-100 me-2" 
+                  @click="handleShareClick">
+                  Share
+                </button>
+              </div>
 
-              <button class="btn btn-success me-2" 
-                @click="handleSubmitClick">
-                Submit
-              </button>
-              <button class="btn btn-primary me-2" 
-                @click="handleShareClick">
-                Share
-              </button>
-              <button class="btn btn-danger me-2" 
-                @click="handleSaveClick">
-                Save
-              </button>
+              <div style="display:flex" class="mt-2">
+                <input 
+                  v-model="state.savedQueryDesc"
+                  class="form-control me-2" 
+                  placeholder="Describe saved query here">
+
+                <button class="btn btn-danger w-50 me-2" 
+                  @click="handleSaveClick">
+                  Save
+                </button>
+              </div>
+
             </div>
 
         </div>

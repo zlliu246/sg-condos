@@ -1,7 +1,7 @@
 <script>
 
-export const QUERY_MAP = {
-    FROM_CONDO_NAME_GET_AVG_PSF: {
+export const DEFAULT_QUERIES = [
+    {
         desc: "From condo name, get avg PSFs",
         query: `
 WITH normalized AS (
@@ -38,8 +38,7 @@ ORDER BY
 LIMIT 100
 `
     },
-
-    FROM_MRTS_GET_AVG_PSF: {
+    {
         desc: "From MRTs, get avg PSF of nearby projects",
         query: `
 SELECT
@@ -69,8 +68,7 @@ ORDER BY
 LIMIT 100
 `
     },
-
-    FACILITIES_NEAR_CONDO: {
+    {
         desc: "From condo name, get nearby facilities",
         query: `
 SELECT
@@ -90,8 +88,7 @@ WHERE
 LIMIT 100
 `
     },
-
-    FROM_NAME_GET_TRANSACTION: {
+    {
         desc: "From condo name, get transactions",
         query: `
 SELECT
@@ -119,7 +116,7 @@ ORDER BY
 LIMIT 100
     `
     }
-}
+]
 
 export const SCHEMA_METADATA_LIST = [
   {
