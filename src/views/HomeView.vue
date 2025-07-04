@@ -90,8 +90,9 @@ function handleSubmitClick() {
   ).catch((error) => { alert(error) })
 }
 
-function handleSampleButtonClick(query) {
-  state.query = query.trim()
+function handleSavedQueryButtonClick(savedQuery) {
+  state.query = savedQuery.query.trim()
+  state.savedQueryDesc = savedQuery.desc
 }
 
 function getTextAreaHeight() {
@@ -168,7 +169,7 @@ function deleteLocalSavedQuery(desc) {
             <textarea
               class="query-box form-control"
               rows="20"
-              style="font: monospace"
+              style="font-family: 'Courier New', Courier, monospace;"
               v-model="state.query"
               @keydown="handleTextAreaKeyDownTabs"
             ></textarea>
@@ -210,14 +211,14 @@ function deleteLocalSavedQuery(desc) {
         <div class="col-sm-3" style="position:relative;" 
           :style="{'max-height': `${getTextAreaHeight()}px`, 'overflow-y': 'scroll'}">
 
-           <h6>Sample queries:</h6>
+           <h6>Saved queries:</h6>
 
             <div v-for="savedQuery in state.savedQueries" 
               style="display:flex; ">
 
               <button 
                 class="btn btn-secondary w-100 mb-2 btn-sm"
-                @click="handleSampleButtonClick(savedQuery.query)"
+                @click="handleSavedQueryButtonClick(savedQuery)"
                 >
                 {{ savedQuery.desc }}
               </button>
