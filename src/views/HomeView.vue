@@ -35,13 +35,6 @@ async function initDb() {
   return db
 }
 
-async function runQuery(db, query) {
-    const conn = await db.connect()
-    const response = (await conn.query(query))
-    const result = response.toArray().map((row) => row.toJSON())
-    return result
-}
-
 const state = reactive({
   db: null,
   query: DEFAULT_QUERIES[0].query.trim(),
@@ -53,6 +46,23 @@ const state = reactive({
 
 const router = useRouter()
 const textareaRef = ref(null)
+
+onMounted(() => {
+  initDb().then(
+    (db) => {
+      state.db = db
+      loadSavedQueries()
+      setUrlParamQueryIfExists()
+      handleSubmitClick()
+    }
+  )
+})
+
+async function runQuery(db, query) {
+    const conn = await db.connect()
+    const response = (await conn.query(query))
+    return response.toArray().map((row) => row.toJSON())
+}
 
 function setUrlParamQueryIfExists() {
   // eg. http://localhost:5173/?query=WITH+normalized+AS+%28%0A++++SELECT%0A++++++++project_name%2C+price%2C+psf%2C+sale_date%2C+sale_type%2C+floor_level%2C%0A++++++++CASE+%0A++++++++++++WHEN+area+%3C+600+THEN+%27%3C+600%27%0A++++++++++++WHEN+area+%3C+700+THEN+%27600+to+699%27%0A++++++++++++WHEN+area+%3C++800+THEN+%27700+to+799%27%0A++++++++++++WHEN+area+%3C+900+THEN+%27800+to+899%27%0A++++++++++++WHEN+area+%3C+1000+THEN+%27900+to+999%27%0A++++++++++++ELSE+%27%3E%3D+1000%27%0A++++++++END+as+area%0A++++FROM+%0A++++++++read_csv_auto%28%27sales.csv%27%29+sales%0A++++++++LEFT+JOIN+read_csv_auto%28%27projects.csv%27%29+projects%0A++++++++ON+sales.project_id+%3D+projects.id%0A++++WHERE+%0A++++++++project_name+%3D+%27forest+woods%27%0A%29%0ASELECT%0A++++MIN%28project_name%29+AS+project_name%2C%0A++++YEAR%28sale_date%29+AS+year%2C%0A++++floor_level%2C%0A++++area%2C%0A++++ROUND%28AVG%28price%29%29+AS+avg_price%2C%0A++++ROUND%28AVG%28psf%29%29+AS+avg_psf%0AFROM%0A++++normalized%0AGROUP+BY%0A++++YEAR%28sale_date%29%2C+floor_level%2C+area%0AORDER+BY%0A++++YEAR%28sale_date%29%2C+floor_level%2C+area
@@ -70,33 +80,14 @@ function getLocalStorageQueries() {
 function loadSavedQueries() {
   state.savedQueries = []
   let localQueries = getLocalStorageQueries()
-  for (const row of localQueries) {
-    state.savedQueries.push(row)
-  }
-  for (const row of DEFAULT_QUERIES) {
-    state.savedQueries.push(row)
-  }
+  for (const row of localQueries) { state.savedQueries.push(row) }
+  for (const row of DEFAULT_QUERIES) { state.savedQueries.push(row) }
 }
-
-onMounted(() => {
-  initDb().then(
-    (db) => {
-      state.db = db
-      loadSavedQueries()
-      setUrlParamQueryIfExists()
-      handleSubmitClick()
-    }
-  )
-})
 
 function handleSubmitClick() {
   runQuery(state.db, state.query).then(
-    (result) => {
-      state.tableData = result
-    }
-  ).catch((error) => {
-    alert(error)
-  })
+    (result) => { state.tableData = result }
+  ).catch((error) => { alert(error) })
 }
 
 function handleSampleButtonClick(query) {
@@ -106,9 +97,7 @@ function handleSampleButtonClick(query) {
 function getTextAreaHeight() {
   try {
     return textareaRef.value.offsetHeight;
-  } catch (error) {
-    return 500
-  }
+  } catch (error) { return 500 }
 }
 
 function handleTextAreaKeyDownTabs(event) {
@@ -118,10 +107,7 @@ function handleTextAreaKeyDownTabs(event) {
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
     const spaces = '    '
-    textarea.value =
-      textarea.value.substring(0, start) +
-      spaces +
-      textarea.value.substring(end)
+    textarea.value = textarea.value.substring(0, start) + spaces + textarea.value.substring(end)
 }
 
 function handleShareClick() {
@@ -131,9 +117,7 @@ function handleShareClick() {
   navigator.clipboard.writeText(url).then(
     (res) => {
       state.messageToUser = 'Copied to clipboard';
-      setTimeout(function() {
-        state.messageToUser = ""
-      }, 2000);
+      setTimeout(function() {state.messageToUser = ""}, 2000);
     }
   )
 }
@@ -154,13 +138,12 @@ function handleSaveClick() {
   loadSavedQueries()
 }
 
-function deleteLocalSavedQuery(query) {
+function deleteLocalSavedQuery(desc) {
+  window.confirm(`Confirm delete ${desc}?`)
   let savedQueries = getLocalStorageQueries()
   let newSavedQueries = []
   for (const row of savedQueries) {
-    if (row.query != query) {
-      newSavedQueries.push(row)
-    }
+    if (row.desc != desc) { newSavedQueries.push(row) }
   }
   localStorage.setItem("savedQueries", JSON.stringify(newSavedQueries))
   loadSavedQueries()
@@ -202,7 +185,7 @@ function deleteLocalSavedQuery(query) {
 
               <button v-if="savedQuery.type=='localstorage'"
                 class="btn btn-danger mb-2 ms-2 btn-sm"
-                @click="deleteLocalSavedQuery(savedQuery.query)">
+                @click="deleteLocalSavedQuery(savedQuery.desc)">
                 Delete
               </button>
 

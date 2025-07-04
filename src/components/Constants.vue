@@ -6,15 +6,23 @@ export const DEFAULT_QUERIES = [
         query: `
 WITH normalized AS (
     SELECT
-        project_name, price, psf, sale_date, sale_type, floor_level,
+        project_name, 
+        price, 
+        psf, 
+        sale_date, 
+        sale_type, 
+        floor_level,
         CASE 
-            WHEN area < 600 THEN '< 600'
+            WHEN area < 600 THEN '599 and below'
             WHEN area < 700 THEN '600 to 699'
             WHEN area <  800 THEN '700 to 799'
             WHEN area < 900 THEN '800 to 899'
             WHEN area < 1000 THEN '900 to 999'
-            ELSE '>= 1000'
-        END as area
+            ELSE 'more than 1000'
+        END as area,
+        num_units,
+        top,
+        developer
     FROM 
         read_csv_auto('sales.csv') sales
         LEFT JOIN read_csv_auto('projects.csv') projects
@@ -28,13 +36,17 @@ SELECT
     floor_level,
     area,
     ROUND(AVG(price)) AS avg_price,
-    ROUND(AVG(psf)) AS avg_psf
+    ROUND(AVG(psf)) AS avg_psf,
+    COUNT(*) AS num_transactions,
+    MIN(num_units) AS num_units,
+    MIN(top) AS top,
+    MIN(developer) AS developer
 FROM
     normalized
 GROUP BY
     YEAR(sale_date), floor_level, area
 ORDER BY
-    YEAR(sale_date), floor_level, area
+    YEAR(sale_date) DESC, floor_level, area
 LIMIT 100
 `
     },
