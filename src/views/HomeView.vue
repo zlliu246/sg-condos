@@ -174,18 +174,18 @@ function deleteLocalSavedQuery(desc) {
             ></textarea>
 
             <!-- SUBMIT BUTTON -->
-            <div class="w-100">
+            <div class="w-100 mt-2">
 
-              <div style="color:limegreen" class="mb-2">{{ state.messageToUser }}</div>
-              
               <div style="display:flex">
                 <button class="btn btn-success w-75 me-2" 
-                  @click="handleSubmitClick">
+                  @click="handleSubmitClick"
+                  title="Submits SQL query">
                   Submit
                 </button>
                 
                 <button class="btn btn-primary w-50 me-2" 
-                  @click="handleShareClick">
+                  @click="handleShareClick"
+                  title="adds query to url params. Share url to share with friends">
                   Share
                 </button>
 
@@ -194,11 +194,14 @@ function deleteLocalSavedQuery(desc) {
                   class="form-control me-2" 
                   placeholder="Describe saved query here">
 
-                <button class="btn btn-danger w-50 me-2" 
-                  @click="handleSaveClick">
+                <button class="btn btn-danger w-50" 
+                  @click="handleSaveClick"
+                  title="save your query in localStorage">
                   Save
                 </button>
               </div>
+
+              <div style="color:limegreen" class="mb-2">{{ state.messageToUser }}</div>
 
             </div>
 
