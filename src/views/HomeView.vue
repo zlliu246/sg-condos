@@ -158,25 +158,56 @@ function deleteLocalSavedQuery(desc) {
 
     <div>
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-6" ref="textareaRef">
 
             <!-- TEXTAREA WHERE SQL QUERY GOES -->
             <textarea
               class="query-box form-control"
               rows="20"
-              ref="textareaRef"
               style="font: monospace"
               v-model="state.query"
               @keydown="handleTextAreaKeyDownTabs"
             ></textarea>
 
+            <!-- SUBMIT BUTTON -->
+            <div class="w-100">
+
+              <div style="color:limegreen" class="mb-2">{{ state.messageToUser }}</div>
+              
+              <div style="display:flex">
+                <button class="btn btn-success w-75 me-2" 
+                  @click="handleSubmitClick">
+                  Submit
+                </button>
+                
+                <button class="btn btn-primary w-50 me-2" 
+                  @click="handleShareClick">
+                  Share
+                </button>
+
+                <input 
+                  v-model="state.savedQueryDesc"
+                  class="form-control me-2" 
+                  placeholder="Describe saved query here">
+
+                <button class="btn btn-danger w-50 me-2" 
+                  @click="handleSaveClick">
+                  Save
+                </button>
+              </div>
+
+            </div>
+
         </div>
 
-        <div class="col-sm-3" style="position:relative">
+        <div class="col-sm-3" style="position:relative;" 
+          :style="{'max-height': `${getTextAreaHeight()}px`, 'overflow-y': 'scroll'}">
 
            <h6>Sample queries:</h6>
 
-            <div v-for="savedQuery in state.savedQueries" style="display:flex">
+            <div v-for="savedQuery in state.savedQueries" 
+              style="display:flex; ">
+
               <button 
                 class="btn btn-secondary w-100 mb-2 btn-sm"
                 @click="handleSampleButtonClick(savedQuery.query)"
@@ -189,37 +220,6 @@ function deleteLocalSavedQuery(desc) {
                 @click="deleteLocalSavedQuery(savedQuery.desc)">
                 Delete
               </button>
-
-            </div>
-
-            <!-- SUBMIT BUTTON -->
-            <div class="position-absolute bottom-0 start-0 w-100">
-
-              <div style="color:limegreen" class="mb-2">{{ state.messageToUser }}</div>
-              
-              <div style="display:flex">
-                <button class="btn btn-success w-100 me-2" 
-                  @click="handleSubmitClick">
-                  Submit
-                </button>
-                
-                <button class="btn btn-primary w-100 me-2" 
-                  @click="handleShareClick">
-                  Share
-                </button>
-              </div>
-
-              <div style="display:flex" class="mt-2">
-                <input 
-                  v-model="state.savedQueryDesc"
-                  class="form-control me-2" 
-                  placeholder="Describe saved query here">
-
-                <button class="btn btn-danger w-50 me-2" 
-                  @click="handleSaveClick">
-                  Save
-                </button>
-              </div>
 
             </div>
 
