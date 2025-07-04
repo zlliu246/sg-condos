@@ -128,6 +128,10 @@ function handleSaveClick() {
     return
   }
   let savedQueries = getLocalStorageQueries()
+  if (savedQueries.map((row) => row.desc).includes(state.savedQueryDesc)) {
+    alert("Desc already exists. Please use another.")
+    return
+  }
   savedQueries.push({
     desc: state.savedQueryDesc,
     query: state.query,
