@@ -81,6 +81,7 @@ How is the data collected:
 - condo project info (eg. num_nuits, top, developer) from 99.co
 
 Tech used for data: Python | Selenium | OneMap API | Airflow | Pandas | SQL
+
 Tech used for site: Vue | DuckDB | Netlify
 
 # Even More FAQ
