@@ -248,6 +248,7 @@ function deleteLocalSavedQuery(desc) {
 
     <div style="overflow: scroll">
       <DataTable :tableData="state.tableData" />
+      <div v-if="!state.tableData">Loading</div>
     </div>
 
 </div>
